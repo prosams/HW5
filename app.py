@@ -15,7 +15,6 @@ app.debug = True
 app.use_reloader = True
 app.config['SECRET_KEY'] = 'hard to guess string from si364'
 ## TODO 364: Create a database in postgresql in the code line below, and fill in your app's database URI. It should be of the format: postgresql://localhost/YOUR_DATABASE_NAME
-
 ## Your final Postgres database should be your uniqname, plus HW5, e.g. "jczettaHW5" or "maupandeHW5"
 app.config["SQLALCHEMY_DATABASE_URI"] = "postgresql://localhost/ulmasHW5"
 ## Provided:
@@ -64,16 +63,18 @@ class TodoListForm(FlaskForm):
     submit = SubmitField("Submit")
 
 # TODO 364: Define an UpdateButtonForm class for use to update todo items
-
-
+class UpdateButtonForm(FlaskForm):
+    button = SubmitField("Update")
 
 # TODO 364: Define a form class for updating the priority of a todolist item
 #(HINT: What class activity you have done before is this similar to?)
-
+class UpdateInfoForm(FlaskForm):
+    newPriority = StringField("What is the new priority of the todolist item?", validators=[Required()])
+    submit = SubmitField('Update')
 
 # TODO 364: Define a DeleteButtonForm class for use to delete todo items
-
-
+class DeleteButtonForm(FlaskForm):
+    button = SubmitField("Delete")
 
 ################################
 ####### Helper Functions #######
