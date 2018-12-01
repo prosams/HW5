@@ -64,7 +64,7 @@ class TodoListForm(FlaskForm):
 
 # TODO 364: Define an UpdateButtonForm class for use to update todo items
 class UpdateButtonForm(FlaskForm):
-    button = SubmitField("Update")
+    submit = SubmitField("Update")
 
 # TODO 364: Define a form class for updating the priority of a todolist item
 #(HINT: What class activity you have done before is this similar to?)
@@ -74,7 +74,7 @@ class UpdatePriorityForm(FlaskForm):
 
 # TODO 364: Define a DeleteButtonForm class for use to delete todo items
 class DeleteButtonForm(FlaskForm):
-    button = SubmitField("Delete")
+    submit = SubmitField("Delete")
 
 ################################
 ####### Helper Functions #######
@@ -142,25 +142,27 @@ def one_list(ident):
 def update(item):
     form = UpdatePriorityForm()
     if request.method == 'POST':
+        itemcheck = TodoItem.filter_by(description=item).first()
         prior = form.newPriority.data
-        
-
-
-
-        newPriority = StringField("What is the new priority of the todolist item?", validators=[Required()])
-        submit = SubmitField('Update')
-
-    # This code should use the form you created above for updating the specific item and manage the process of updating the item's priority.
-    # Once it is updated, it should redirect to the page showing all the links to todo lists.
-    # It should flash a message: Updated priority of <the description of that item>
-    # HINT: What previous class example is extremely similar?
+        itemcheck.priority = prior
+        db.session.commit()
+        flash("Updated priority of " + item) # It should flash a message: Updated priority of <the description of that item>
+        return redirect(url_for('all_lists')) # Once it is updated, should redirect to page showing all the links to todo lists.
+    flash(form.errors)
+    return render_template('update_item.html', form=form, desc = item)
 
 # TODO 364: Fill in the update_item.html template to work properly with this update route. (HINT: Compare against example!)
 
 # TODO 364: Complete route to delete a whole ToDoList
 @app.route('/delete/<lst>',methods=["GET","POST"])
 def delete(lst):
-    pass # Replace with code
+    item = TodoList.filter_by(id = lst).first()
+    title = item.title
+    db.session.delete(item)
+    db.session.commit()
+    flash("Deleted list " + title)
+    return redirect(url_for('all_lists'))
+
     # This code should successfully delete the appropriate todolist
     # Should flash a message about what was deleted, e.g. Deleted list <title of list>
     # And should redirect the user to the page showing all the todo lists
