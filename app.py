@@ -149,7 +149,6 @@ def update(item):
         flash("Updated priority of " + item) # It should flash a message: Updated priority of <the description of that item>
         return redirect(url_for('all_lists')) # Once it is updated, should redirect to page showing all the links to todo lists.
     return render_template('update_item.html', form=form, desc = item)
-
 # TODO 364: Fill in the update_item.html template to work properly with this update route. (HINT: Compare against example!)
 
 # TODO 364: Complete route to delete a whole ToDoList
@@ -157,14 +156,10 @@ def update(item):
 def delete(lst):
     item = TodoList.query.filter_by(id = lst).first()
     title = item.title
-    db.session.delete(item)
+    db.session.delete(item)                   # This code should successfully delete the appropriate todolist
     db.session.commit()
-    flash("Deleted list " + title)
-    return redirect(url_for('all_lists'))
-
-    # This code should successfully delete the appropriate todolist
-    # Should flash a message about what was deleted, e.g. Deleted list <title of list>
-    # And should redirect the user to the page showing all the todo lists
+    flash("Deleted list " + title)            # Should flash a message about what was deleted, e.g. Deleted list <title of list>
+    return redirect(url_for('all_lists'))     # And should redirect the user to the page showing all the todo lists
     # HINT: Compare against what you've done for updating and class notes -- the goal here is very similar, and in some ways simpler.
 
 if __name__ == "__main__":
