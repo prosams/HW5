@@ -68,7 +68,7 @@ class UpdateButtonForm(FlaskForm):
 
 # TODO 364: Define a form class for updating the priority of a todolist item
 #(HINT: What class activity you have done before is this similar to?)
-class UpdateInfoForm(FlaskForm):
+class UpdatePriorityForm(FlaskForm):
     newPriority = StringField("What is the new priority of the todolist item?", validators=[Required()])
     submit = SubmitField('Update')
 
@@ -81,7 +81,6 @@ class DeleteButtonForm(FlaskForm):
 ################################
 
 ## Provided.
-
 def get_or_create_item(item_string):
     elements = [x.strip().rstrip() for x in item_string.split(",")]
     item = TodoItem.query.filter_by(description=elements[0]).first()
@@ -104,7 +103,6 @@ def get_or_create_todolist(title, item_strings=[]):
     db.session.commit()
     return l
 
-
 ###################################
 ##### Routes & view functions #####
 ###################################
@@ -122,11 +120,10 @@ def index():
 
 # Provided - see below for additional TODO
 @app.route('/all_lists',methods=["GET","POST"])
-def all_lists():
+def all_lists(): # Need a delete button available for EACH TO DO LIST SAVED !
     form = DeleteButtonForm()
     lsts = TodoList.query.all()
-    return render_template('all_lists.html',todo_lists=lsts, form=form)
-
+    return render_template('all_lists.html', todo_lists=lsts, form=form)
 # TODO 364: Update the all_lists.html template and the all_lists view function such that there is a delete button available for each ToDoList saved.
 # When you click on the delete button for each list, that list should get deleted -- this is also addressed in a later TODO.
 
@@ -136,15 +133,23 @@ def one_list(ident):
     form = UpdateButtonForm()
     lst = TodoList.query.filter_by(id=ident).first()
     items = lst.items.all()
-    return render_template('list_tpl.html',todolist=lst,items=items,form=form)
+    return render_template('list_tpl.html', todolist=lst, items=items, form=form)
 # TODO 364: Update the one_list view function and the list_tpl.html view file so that there is an Update button next to each todolist item, and the priority integer of that item can be updated. (This is also addressed in later TODOs.)
 # HINT: These template updates are minimal, but that small update(s) make(s) a big change in what you can do in the app! Check out the examples from previous classes for help.
-
 
 # TODO 364: Complete route to update an individual ToDo item's priority
 @app.route('/update/<item>',methods=["GET","POST"])
 def update(item):
-    pass # Replace with code
+    form = UpdatePriorityForm()
+    if request.method == 'POST':
+        prior = form.newPriority.data
+        
+
+
+
+        newPriority = StringField("What is the new priority of the todolist item?", validators=[Required()])
+        submit = SubmitField('Update')
+
     # This code should use the form you created above for updating the specific item and manage the process of updating the item's priority.
     # Once it is updated, it should redirect to the page showing all the links to todo lists.
     # It should flash a message: Updated priority of <the description of that item>
