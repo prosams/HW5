@@ -141,14 +141,13 @@ def one_list(ident):
 @app.route('/update/<item>',methods=["GET","POST"])
 def update(item):
     form = UpdatePriorityForm()
-    if request.method == 'POST':
-        itemcheck = TodoItem.filter_by(description=item).first()
+    if form.validate_on_submit():
+        itemcheck = TodoItem.query.filter_by(description=item).first()
         prior = form.newPriority.data
         itemcheck.priority = prior
         db.session.commit()
         flash("Updated priority of " + item) # It should flash a message: Updated priority of <the description of that item>
         return redirect(url_for('all_lists')) # Once it is updated, should redirect to page showing all the links to todo lists.
-    flash(form.errors)
     return render_template('update_item.html', form=form, desc = item)
 
 # TODO 364: Fill in the update_item.html template to work properly with this update route. (HINT: Compare against example!)
@@ -156,7 +155,7 @@ def update(item):
 # TODO 364: Complete route to delete a whole ToDoList
 @app.route('/delete/<lst>',methods=["GET","POST"])
 def delete(lst):
-    item = TodoList.filter_by(id = lst).first()
+    item = TodoList.query.filter_by(id = lst).first()
     title = item.title
     db.session.delete(item)
     db.session.commit()
